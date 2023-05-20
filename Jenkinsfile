@@ -37,7 +37,7 @@ pipeline {
             steps {
                 echo 'Code syntax checking...'
                 sh 'sudo terraform validate'
-               
+                sh 'pwd'
             }
         }
         
