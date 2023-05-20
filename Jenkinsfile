@@ -12,6 +12,7 @@ pipeline {
                 echo 'Cloning project codebase...'
                 git branch: 'main', url: 'https://github.com/Michaelgwei86/effulgencetech-devops-fully-automated-infra.git'
                 sh 'ls'
+                sh 'pwd'
             }
         }
         
@@ -26,7 +27,7 @@ pipeline {
         stage('Terraform init') {
             steps {
                 echo 'Initiliazing terraform project...'
-                sh 'sudo terraform init'
+                sh 'terraform init'
                
             }
         }
@@ -44,7 +45,7 @@ pipeline {
         stage('Terraform plan') {
             steps {
                 echo 'Terraform plan for the dry run...'
-                sh 'sudo terraform plan'
+                sh 'terraform plan'
                
             }
         }
