@@ -1,7 +1,7 @@
 # Complete Opensource CI/CD Architecture
 ![Project architecture](https://camo.githubusercontent.com/7bcff4210c1ea5d80928ea710c4ccf1abcdb8facafd25a028f3080d1eaec21e6/68747470733a2f2f6c756369642e6170702f7075626c69635365676d656e74732f766965772f61366566333233332d376464612d343833612d613636322d6438656339303339356261332f696d6167652e706e67)
 
-## devops-fully-automated-infra
+## Devops-fully-automated-infracture-deployment
 Fully automated and secured Terraform infra pipeline
 
 Testing teh webhook.....
