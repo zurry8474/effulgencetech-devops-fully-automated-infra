@@ -5,7 +5,7 @@ Testing teh webhook.....
 
 ## CICD Infra setup
 1) ###### GitHub setup
-    Fork GitHub Repository by using the existing repo "devops-fully-automated-infra" (https://github.com/cvamsikrishna11/devops-fully-automated-infra)     
+    Fork GitHub Repository by using the existing repo "effulgencetech-devops-fully-automated-infra" (https://github.com/Michaelgwei86/effulgencetech-devops-fully-automated-infra.git)     
     - Go to GitHub (github.com)
     - Login to your GitHub Account
     - **Fork repository "devops-fully-automated-infra" (https://github.com/Michaelgwei86/effulgencetech-devops-fully-automated-infra.git) & name it "effulgencetech-devops-fully-automated-infra.git"**
@@ -17,9 +17,9 @@ Testing teh webhook.....
     - Security Group (Open): 8080, 9100 and 22 to 0.0.0.0/0
     - Key pair: Select or create a new keypair
     - **Attach Jenkins server with IAM role having "AdministratorAccess"**
-    - User data (Copy the following user data): https://github.com/cvamsikrishna11/devops-fully-automated/blob/installations/jenkins-maven-ansible-setup.sh
     - Launch Instance
     - After launching this Jenkins server, attach a tag as **Key=Application, value=jenkins**
+    - SSH into the instance and Run the following commands in the **jenkins-install.sh file
 
 3) ###### Slack 
     - **Join the slack channel https://join.slack.com/t/slack-wcl4742/shared_invite/zt-1kid01o3n-W47OUTHBd2ZZpSzGnow1Wg**
@@ -39,16 +39,7 @@ Testing teh webhook.....
         - Name and Email can also be admin. You can use `admin` all, as its a poc.
     - Continue and Start using Jenkins
 
-2)  #### Plugin installations:
-    - Click on "Manage Jenkins"
-    - Click on "Plugin Manager"
-    - Click "Available"
-    - Search and Install the following Plugings "Install Without Restart"        
-        - **Slack Notification**
-
-
-
-3)  #### Pipeline creation
+2)  #### Pipeline creation
     - Click on **New Item**
     - Enter an item name: **app-infra-pipeline** & select the category as **Pipeline**
     - Now scroll-down and in the Pipeline section --> Definition --> Select Pipeline script from SCM
@@ -59,7 +50,12 @@ Testing teh webhook.....
         - Script Path: Jenkinsfile
     - Save
 
-
+3)  #### Plugin installations:
+    - Click on "Manage Jenkins"
+    - Click on "Plugin Manager"
+    - Click "Available"
+    - Search and Install the following Plugings "Install Without Restart"        
+        - **Slack Notification**
 
 4)  #### Credentials setup(Slack):
     - Click on Manage Jenkins --> Manage Credentials --> Global credentials (unrestricted) --> Add Credentials
@@ -78,7 +74,7 @@ Testing teh webhook.....
                 - Credentials: select the slack-token credentials (created above) from the drop-down    
 
 
-### GitHub webhook
+### Performing continous integration with GitHub webhook
 
 1) #### Add jenkins webhook to github
     - Access your repo **devops-fully-automated-infra** on github
