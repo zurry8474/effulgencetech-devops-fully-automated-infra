@@ -10,7 +10,7 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
     }
-    
+
     stages {
         stage('Git checkout') {
             steps {
@@ -45,7 +45,17 @@ pipeline {
                 sh 'pwd'
             }
         }
-        
+        stage("AWS Credentials Authentication"){
+            steps{
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    CredentialsId: 'aws-jekins-demo',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]])
+                sh "aws s3 ls"
+            }
+        }
         
         stage('Terraform plan') {
             steps {
