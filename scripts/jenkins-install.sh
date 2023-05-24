@@ -19,3 +19,6 @@ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinu
 sudo yum -y install terraform
 terraform --version
 aws configure
+
+#Other project dependencies
+sudo yum install pip

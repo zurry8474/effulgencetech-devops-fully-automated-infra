@@ -6,10 +6,16 @@ def COLOR_MAP = [
 pipeline {
     agent any
     
-    // environment {
-    //     AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-    //     AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-    // }
+    environment {
+        // Credentials for Prod Environment
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        
+        // Credentials for Prod Environment
+        //AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_PROD')
+        //AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY_PROD')
+
+    }
 
     stages {
         stage('Git checkout') {
@@ -18,6 +24,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Michaelgwei86/effulgencetech-devops-fully-automated-infra.git'
                 sh 'ls'
                 sh 'pwd'
+            }
+        }
+        
+        stage('Verifying AWS Configuration'){
+            steps {
+                sh 'aws s3 ls'
             }
         }
         
@@ -37,7 +49,6 @@ pipeline {
             }
         }
         
-        
         stage('Terraform validate') {
             steps {
                 echo 'Code syntax checking...'
@@ -45,18 +56,7 @@ pipeline {
                 sh 'pwd'
             }
         }
-        stage("AWS Credentials Authentication"){
-            steps{
-                withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    CredentialsId: 'aws-jekins-demo',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                ]])
-                sh "aws s3 ls"
-            }
-        }
-        
+
         stage('Terraform plan') {
             steps {
                 echo 'Terraform plan for the dry run...'
@@ -64,13 +64,16 @@ pipeline {
                
             }
         }
-        
-        
-        
-        
+    // Static code analysis of infrastucture with CHECKOV
         stage('Checkov scan') {
             steps {
                 
+                sh 'sudo pip3 install checkov'
+                sh 'checkov -d .'
+                sh 'checkov -d . --skip-check CKV_AWS_23,CKV_AWS_24,CKV_AWS_126,CKV_AWS_135,CKV_AWS_8,CKV_AWS_23,CKV_AWS_24'
+                sh 'checkov -d . --skip-check CKV_AWS'
+                
+                //Optimized method of implementing SH multi-line code
                 sh """
                 sudo pip3 install checkov
                 checkov -d .
@@ -99,8 +102,7 @@ pipeline {
                
                
             }
-        }
-        
+        }  
         
     }
     

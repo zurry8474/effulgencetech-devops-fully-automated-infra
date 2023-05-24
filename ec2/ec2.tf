@@ -19,6 +19,12 @@ variable "key_pair_name" {
 
 }
 
+variable "ami_id" {
+  type = string
+  description = "AMI ID of instance in your region"
+  default = "ami-01acac09adf473073" //in oregon US-WEST-2 region
+}
+
 resource "aws_security_group" "ec2_sg" {
   name        = join("", [var.name, "-", "ec2-sg"])
   description = "Allow  traffic for http and ssh"
@@ -61,7 +67,7 @@ resource "aws_iam_instance_profile" "instance_profile" {
 
 
 resource "aws_instance" "web_server" {
-  ami                    = "ami-0b0dcb5067f052a63"
+  ami                    = var.ami_id
   instance_type          = "t3.small"
   key_name               = var.key_pair_name
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
@@ -71,10 +77,10 @@ resource "aws_instance" "web_server" {
 
   # best practices as per checkov scanner
 
-  monitoring    = true
-  ebs_optimized = true
-  root_block_device {
-    encrypted = true
-  }
+  # monitoring    = true
+  # ebs_optimized = true
+  # root_block_device {
+  #   encrypted = true
+  # }
 
 }
