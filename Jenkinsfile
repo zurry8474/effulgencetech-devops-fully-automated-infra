@@ -5,18 +5,12 @@ def COLOR_MAP = [
 
 pipeline {
     agent any
-    
+
     environment {
-        // Credentials for Prod Environment
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY')
+        //Credentials for Prod environment
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID') 
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        
-        // Credentials for Prod Environment
-        //AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_PROD')
-        //AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY_PROD')
-
     }
-
     stages {
         stage('Git checkout') {
             steps {
@@ -32,7 +26,7 @@ pipeline {
                 sh 'aws s3 ls'
             }
         }
-        
+
          stage('Verify Terraform Version') {
             steps {
                 echo 'verifying the terrform version...'
@@ -49,14 +43,16 @@ pipeline {
             }
         }
         
+        
         stage('Terraform validate') {
             steps {
                 echo 'Code syntax checking...'
-                sh 'sudo terraform validate'
+                sh 'terraform validate'
                 sh 'pwd'
             }
         }
-
+        
+        
         stage('Terraform plan') {
             steps {
                 echo 'Terraform plan for the dry run...'
@@ -65,26 +61,14 @@ pipeline {
             }
         }
     // Static code analysis of infrastucture with CHECKOV
-        stage('Checkov scan') {
-            steps {
-                
-                sh 'sudo pip3 install checkov'
-                sh 'checkov -d .'
-                sh 'checkov -d . --skip-check CKV_AWS_23,CKV_AWS_24,CKV_AWS_126,CKV_AWS_135,CKV_AWS_8,CKV_AWS_23,CKV_AWS_24'
-                sh 'checkov -d . --skip-check CKV_AWS'
-                
-                //Optimized method of implementing SH multi-line code
-                sh """
-                sudo pip3 install checkov
-                checkov -d .
-                #checkov -d . --skip-check CKV_AWS_23,CKV_AWS_24,CKV_AWS_126,CKV_AWS_135,CKV_AWS_8,CKV_AWS_23,CKV_AWS_24
-                #checkov -d . --skip-check CKV_AWS*
-                """
-               
-            }
-        }
-        
-        
+        // stage('Checkov scan') {
+        //     steps {
+        //       // sh 'pip3 install checkov'
+        //         sh 'checkov -d .'
+        //         // sh 'checkov -d . --skip-check CKV_AWS_23,CKV_AWS_24,CKV_AWS_126,CKV_AWS_135,CKV_AWS_8,CKV_AWS_23,CKV_AWS_24'
+        //         // sh 'checkov -d . --skip-check CKV_AWS'
+        //     }
+        // }
         
         stage('Manual approval') {
             steps {
@@ -94,25 +78,32 @@ pipeline {
             }
         }
         
-        
-         stage('Terraform apply') {
+        stage('Terraform apply') {
             steps {
                 echo 'Terraform apply...'
-                sh 'sudo terraform apply --auto-approve'
-               
+                sh 'terraform apply --auto-approve'
+            } 
+        }
+
+        stage('Manual approval to Delete') {
+            steps {
+                
+                input 'Approval required to clean environment'
                
             }
-        }  
+        }
         
+        stage('Terraform Destroy') {
+            steps {
+                echo 'Terraform Destroy...'
+                sh 'terraform destroy --auto-approve'
+                }
+            }
     }
-    
-     post { 
+    post { 
         always { 
             echo 'I will always say Hello again!'
-            slackSend channel: '#team-devops', color: COLOR_MAP[currentBuild.currentResult], message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+            slackSend channel: '#effulgencetech-devops-channel', color: COLOR_MAP[currentBuild.currentResult], message: "*${currentBuild.currentResult}:*, Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
-    }
-    
-    
-    
+     }
 }
