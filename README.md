@@ -96,7 +96,7 @@ Once both the above steps are done click on Save.
 ### Codebase setup
 
 1) #### For checking the checkov scan uncomment lines 74-78 in ec2/ec2.tf file
-    - Go back to your local, open your "devops-fully-automated" project on VSCODE
+    - Go back to your local, open your "effulgencetech-devops-fully-automated" project on VSCODE
     - Open "ec2.tf file" uncomment lines   
     - Save the changes in both files
     - Finally push changes to repo
