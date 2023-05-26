@@ -6,6 +6,10 @@ def COLOR_MAP = [
 pipeline {
     agent any
 
+    // tools {
+    //     terraform 'Terraform'
+    // }
+
     environment {
         //Credentials for Prod environment
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID') 
