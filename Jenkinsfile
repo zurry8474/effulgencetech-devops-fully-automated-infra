@@ -6,9 +6,9 @@ def COLOR_MAP = [
 pipeline {
     agent any
 
-    // tools {
-    //     terraform 'Terraform'
-    // }
+    tools {
+         terraform 'Terraform'
+     }
 
     environment {
         //Credentials for Prod environment
